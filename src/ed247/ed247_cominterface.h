@@ -113,7 +113,6 @@ namespace ed247 {
       Receiver(Context*         context,
                socket_address_t from_address,
                socket_address_t multicast_interface,
-               socket_address_t multicast_group_address,
                receive_callback_t callback);
       void receive();
 
