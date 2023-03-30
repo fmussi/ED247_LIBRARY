@@ -1931,6 +1931,32 @@ ed247_status_t ed247_stream_assistant_read_signal(
   return ED247_STATUS_SUCCESS;
 }
 
+ed247_status_t ed247_stream_assistant_read_signal_u8array(
+  ed247_stream_assistant_t assistant,
+  ed247_signal_t           signal,
+  uint8_t *            signal_sample_data_u8array,
+  uint32_t *               signal_sample_size)
+{
+  ed247_status_t status;
+  const void * signal_sample;
+
+  status = ed247_stream_assistant_read_signal(assistant,signal, &signal_sample,signal_sample_size);
+
+  //signal_sample_data_u8array[0] = 13;
+  memcpy(signal_sample_data_u8array,(uint8_t*)signal_sample,(size_t)(*signal_sample_size));
+  //signal_sample_data_u8array = (uint8_t*)signal_sample;
+  //signal_sample_data_u8array[0] = *(uint8_t*)signal_sample;
+  
+  return status;
+
+}
+
+extern LIBED247_EXPORT ed247_status_t arrayOut(uint8_t * arrayOutput)
+{
+  arrayOutput[0] = 22;
+  return ED247_STATUS_SUCCESS;  
+}
+
 ed247_status_t ed247_stream_assistant_push_sample(
   ed247_stream_assistant_t  assistant,
   const ed247_timestamp_t * timestamp,

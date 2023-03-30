@@ -5,3 +5,4 @@
 # build_Win32_mingw
 # build_Win64_mingw
 build/*
+src/_sandbox/build/*

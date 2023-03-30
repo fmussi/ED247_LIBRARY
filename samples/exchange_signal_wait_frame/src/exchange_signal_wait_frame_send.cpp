@@ -87,7 +87,8 @@ int main(int argc, char *argv[])
     // Write & push signal samples
     uint32_t i;
     for(i = 0 ; i < 10 ; i++){
-        *(uint8_t*)signal_sample = i % 2;
+        printf("Sending %d ( %08b )\n", atoi(argv[2]),atoi(argv[2]));
+        *(uint8_t*)signal_sample = atoi(argv[2]);
         // Update stream sample
         status = ed247_stream_assistant_write_signal(assistant, signal, signal_sample, signal_sample_size);
         if(check_status(context, status)) return EXIT_FAILURE;

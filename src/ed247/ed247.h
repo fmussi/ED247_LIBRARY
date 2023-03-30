@@ -1419,6 +1419,13 @@ extern LIBED247_EXPORT ed247_status_t ed247_stream_assistant_read_signal(
     const void **            signal_sample_data,
     uint32_t *               signal_sample_size);
 
+extern LIBED247_EXPORT ed247_status_t ed247_stream_assistant_read_signal_u8array(
+    ed247_stream_assistant_t assistant,
+    ed247_signal_t           signal,
+    uint8_t *          signal_sample_data_u8array,
+    uint32_t *               signal_sample_size);
+
+extern LIBED247_EXPORT ed247_status_t arrayOut(uint8_t * arrayOutput);
 
 /**
  * @brief Push the assistant sample buffer on the stream stack.

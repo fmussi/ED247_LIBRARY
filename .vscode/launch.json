@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "name": "x64 (gdb) Attach to LVRT",
+            "type": "cppdbg",
+            "request": "attach",
+            "program": "/usr/local/natinst/labview/lvrt",
+            "MIMode": "gdb",
+            "symbolLoadInfo": {
+                "loadAll": true,
+                "exceptionList": ""
+            },
+            "additionalSOLibSearchPath": "/home/admin/git_repos/ED247_LIBRARY/src/_sandbox/build/bin",
+            "sourceFileMap": {},
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb",
+            "processId": 1704
+        }
+    ],
+    "version": "2.0.0"
+}

@@ -128,6 +128,7 @@ ed247_status_t stream_receive(ed247_context_t context, ed247_stream_t stream)
     const void * signal_sample;
     uint32_t signal_sample_size;
     ed247_stream_assistant_t assistant;
+    uint32_t i;
 
     status = ed247_stream_get_assistant(stream, &assistant);
     if(check_status(context,status)) return status;
@@ -145,7 +146,12 @@ ed247_status_t stream_receive(ed247_context_t context, ed247_stream_t stream)
 
             // Process signal sample
             // ...
-
+            printf("Received %d bytes - expected size %d\n",sizeof(*(uint8_t*)signal_sample),signal_sample_size);
+            for (i = 0 ; i < signal_sample_size ; i++)
+            {
+                printf("Data %d: %d\n",i,*(uint8_t*)signal_sample);
+                printf("Emtpy: %d\n",empty);
+            }
         }
 
     }while(!empty);
