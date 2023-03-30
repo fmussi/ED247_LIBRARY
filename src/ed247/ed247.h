@@ -1419,13 +1419,31 @@ extern LIBED247_EXPORT ed247_status_t ed247_stream_assistant_read_signal(
     const void **            signal_sample_data,
     uint32_t *               signal_sample_size);
 
-extern LIBED247_EXPORT ed247_status_t ed247_stream_assistant_read_signal_u8array(
+/**
+ * @brief helper function for LabVIEW to Read a signal sample from the assistant sample buffer.
+ * @details
+ * This function manage endianness (analogue, NAD, VNAD). <br/>
+ *
+ * The `signal_sample_size` will be be set to:
+ *   - 1 for DISCRETE,
+ *   - 4 for ANALOGUE (float),
+ *   - nad_type_size * dimensions for NAD,
+ *   - a multiple of nad_type_size for VNAD (including 0).
+ *
+ * The assistant sample buffer is updated by ed247_stream_assistant_pop_sample(). It shall be called before readings.
+ * @ingroup stream_assistant
+ * @param[in] assistant Assistant identifier
+ * @param[in] signal Signal identifier
+ * @param[out] signal_sample_data Retrieve pointer of the stream sample allocated in memory. To be consumed by LabVIEW, the pointer refers to a 1D uint8 array
+ * @param[out] signal_sample_size Retrieve size of the stream sample allocated in memory
+ * @retval ED247_STATUS_SUCCESS
+ * @retval ED247_STATUS_FAILURE
+ */
+extern LIBED247_EXPORT ed247_status_t ed247_stream_assistant_read_signal_lv(
     ed247_stream_assistant_t assistant,
     ed247_signal_t           signal,
     uint8_t *          signal_sample_data_u8array,
     uint32_t *               signal_sample_size);
-
-extern LIBED247_EXPORT ed247_status_t arrayOut(uint8_t * arrayOutput);
 
 /**
  * @brief Push the assistant sample buffer on the stream stack.
