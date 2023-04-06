@@ -6,3 +6,5 @@
 # build_Win64_mingw
 build/*
 src/_sandbox/build/*
+deploy/libed247/usr/
+*.ipk

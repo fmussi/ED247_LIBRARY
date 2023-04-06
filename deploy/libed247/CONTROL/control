@@ -1,0 +1,9 @@
+Package: libed247
+Version: 1.0.0.0-1+a0
+Architecture: all
+Maintainer: National Instruments <fabio.mussi@ni.com>
+Section: Infrastructure
+Priority: option
+Depends: libxml2
+Homepage: https://github.com/fmussi/ED247_LIBRARY
+Description: ED247RevA vistas library
