@@ -199,7 +199,7 @@ ed247_status_t ed247_component_set_user_data(
     ed247_context->set_user_data(user_data);
   }
   LIBED247_CATCH("Set user data");
-  return ED247_STATUS_SUCCESS;	
+  return ED247_STATUS_SUCCESS;
 }
 
 ed247_status_t ed247_component_get_user_data(
@@ -220,7 +220,7 @@ ed247_status_t ed247_component_get_user_data(
     ed247_context->get_user_data(user_data);
   }
   LIBED247_CATCH("Get user data");
-  return ED247_STATUS_SUCCESS;	
+  return ED247_STATUS_SUCCESS;
 }
 
 // Deprecated
@@ -319,7 +319,7 @@ ed247_status_t ed247_get_channel_list(
     ((ed247_channel_clist_base_t*)*channels)->reset_iterator();
   }
   LIBED247_CATCH("Get channels info");
-  return ED247_STATUS_SUCCESS;	
+  return ED247_STATUS_SUCCESS;
 }
 
 ed247_status_t ed247_find_channels(
@@ -1326,7 +1326,7 @@ ed247_status_t ed247_stream_get_assistant(
   *assistant = nullptr;
   try{
     auto ed247_stream = (ed247::Stream*)(stream);
-    *assistant = ed247_stream->get_api_assistant();
+    *assistant = ed247_stream->get_assistant();
     if(*assistant == nullptr) {
       PRINT_WARNING("Stream '" << ed247_stream->get_name() << "' do not have a valid stream signal assistant.");
       return ED247_STATUS_FAILURE;
@@ -1727,6 +1727,20 @@ ed247_status_t ed247_signal_get_stream(
 }
 
 
+ed247_status_t ed247_signal_get_assistant(
+    ed247_signal_t             signal,
+    ed247_stream_assistant_t * assistant)
+{
+  PRINT_DEBUG("function " << __func__ << "()");
+  ed247_stream_t stream;
+  ed247_status_t status = ed247_signal_get_stream(signal, &stream);
+  if (status != ED247_STATUS_SUCCESS) {
+    return status;
+  }
+  return ed247_stream_get_assistant(stream, assistant);
+}
+
+
 ed247_status_t ed247_signal_allocate_sample(
   ed247_signal_t signal,
   void **        sample_data,
@@ -1895,6 +1909,18 @@ ed247_status_t ed247_stream_assistant_write_signal(
   return ED247_STATUS_SUCCESS;
 }
 
+bool ed247_stream_assistant_was_written(ed247_stream_assistant_t assistant)
+{
+  PRINT_DEBUG("function " << __func__ << "()");
+  if(!assistant){
+    PRINT_ERROR(__func__ << ": Invalid assistant");
+    return false;
+  }
+  ed247::StreamAssistant* ed247_assistant = static_cast<ed247::StreamAssistant*>(assistant);
+  return ed247_assistant->was_written();
+}
+
+
 ed247_status_t ed247_stream_assistant_read_signal(
   ed247_stream_assistant_t assistant,
   ed247_signal_t           signal,
@@ -1951,6 +1977,28 @@ ed247_status_t ed247_stream_assistant_push_sample(
   return ED247_STATUS_SUCCESS;
 }
 
+ed247_status_t ed247_stream_assistants_written_push_samples(
+   ed247_context_t          context,
+   const ed247_timestamp_t* data_timestamp)
+{
+  PRINT_DEBUG("function " << __func__ << "()");
+
+  if(!context) {
+    PRINT_ERROR(__func__ << ": Invalid context");
+    return ED247_STATUS_FAILURE;
+  }
+
+  try{
+    ed247::Context* ed247_context = static_cast<ed247::Context*>(context);
+    if (ed247_context->stream_assistants_written_push_samples(data_timestamp)) {
+      return ED247_STATUS_SUCCESS;
+    } else {
+      return ED247_STATUS_FAILURE;
+    }
+  }
+  LIBED247_CATCH("ed247_stream_assistants_written_push_samples");
+}
+
 ed247_status_t ed247_stream_assistant_pop_sample(
   ed247_stream_assistant_t        assistant,
   const ed247_timestamp_t **      data_timestamp,
@@ -1970,4 +2018,25 @@ ed247_status_t ed247_stream_assistant_pop_sample(
   }
   LIBED247_CATCH("Pop stream sample with assistant");
   return result;
+}
+
+
+ed247_status_t stream_assistants_pop_samples(ed247_context_t context)
+{
+  PRINT_DEBUG("function " << __func__ << "()");
+
+  if(!context) {
+    PRINT_ERROR(__func__ << ": Invalid context");
+    return ED247_STATUS_FAILURE;
+  }
+
+  try{
+    ed247::Context* ed247_context = static_cast<ed247::Context*>(context);
+    if (ed247_context->stream_assistants_pop_samples()) {
+      return ED247_STATUS_SUCCESS;
+    } else {
+      return ED247_STATUS_FAILURE;
+    }
+  }
+  LIBED247_CATCH("stream_assistants_pop_samples");
 }

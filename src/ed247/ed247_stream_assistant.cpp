@@ -40,7 +40,8 @@ namespace {
 
 ed247::StreamAssistant::StreamAssistant(ed247::Stream* stream):
   _stream(stream),
-  _buffer(stream->get_sample_max_size_bytes())
+  _buffer(stream->get_sample_max_size_bytes()),
+  _was_written(false)
 {
   MEMCHECK_NEW(this, "StreamAssistant");
 }
@@ -49,6 +50,17 @@ ed247::StreamAssistant::~StreamAssistant()
 {
   MEMCHECK_DEL(this, "StreamAssistant");
 }
+
+bool ed247::StreamAssistant::push_if_was_written(const ed247_timestamp_t* data_timestamp, bool* full)
+{
+  if (was_written()) {
+    return push(data_timestamp, full);
+  }
+
+  return true; // nothing to do => success
+}
+
+
 
 //
 // Fixed StreamAssistant
@@ -68,6 +80,7 @@ bool ed247::FixedStreamAssistant::write(const ed247::Signal& signal, const void*
   }
 
   swap_copy((const char*) data, _buffer.data_rw() + signal.get_byte_offset(), size, signal.get_nad_type());
+  _was_written = true;
 
   return true;
 }
@@ -78,6 +91,7 @@ bool ed247::FixedStreamAssistant::push(const ed247_timestamp_t* data_timestamp, 
     PRINT_ERROR("Stream '" << _stream->get_name() << "': Cannot push to a non-output stream");
     return false;
   }
+  _was_written = false;
   return _stream->push_sample(_buffer.data(), _buffer.size(), data_timestamp, full);
 }
 
@@ -100,6 +114,7 @@ ed247_status_t ed247::FixedStreamAssistant::pop(const ed247_timestamp_t** data_t
 
   if (_stream->get_incoming_sample_number() == 0) {
     PRINT_CRAZY("Stream '" << _stream->get_name() << "': no data received.");
+    if (empty) *empty = true;
     return ED247_STATUS_NODATA;
   }
 
@@ -137,7 +152,7 @@ bool ed247::VNADStreamAssistant::write(const ed247::Signal& signal, const void* 
     PRINT_ERROR("Stream '" << _stream->get_name() << "': Cannot write Signal [" << signal.get_name() << "]: invalid size: " << size);
     return false;
   }
-
+  _was_written = true;
   return true;
 }
 
@@ -162,6 +177,8 @@ bool ed247::VNADStreamAssistant::push(const ed247_timestamp_t* data_timestamp, b
     signal_sample.reset();
   }
 
+  _was_written = false;
+
   _buffer.set_size(buffer_index);
   return _stream->push_sample(_buffer.data(), _buffer.size(), data_timestamp, full);
 }
@@ -184,6 +201,7 @@ ed247_status_t ed247::VNADStreamAssistant::pop(const ed247_timestamp_t** data_ti
 
   if (_stream->get_incoming_sample_number() == 0) {
     PRINT_CRAZY("Stream '" << _stream->get_name() << "': no data received.");
+    if (empty) *empty = true;
     return ED247_STATUS_NODATA;
   }
 

@@ -25,6 +25,7 @@
 #include "ed247_context.h"
 #include "ed247_client_list.h"
 #include "ed247_logs.h"
+#include "ed247_stream_assistant.h"
 
 //
 // Client lists (ed247.h interface)
@@ -92,6 +93,30 @@ ed247::Context::Context(std::unique_ptr<ed247::xml::Component>&& configuration):
     _channel_set.create(&channel_configuration);
   }
 }
+
+bool ed247::Context::stream_assistants_written_push_samples(const ed247_timestamp_t* data_timestamp)
+{
+  for(auto& stream : _stream_set.get_streams_signals_output()) {
+    if (stream->get_assistant()->push_if_was_written(data_timestamp, nullptr) == false) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool ed247::Context::stream_assistants_pop_samples()
+{
+  for(auto& stream : _stream_set.get_streams_signals_input()) {
+    bool empty = false;
+    while (empty == false) {
+      if (stream->get_assistant()->pop(nullptr, nullptr, nullptr, &empty) == ED247_STATUS_FAILURE) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 
 void ed247::Context::send_pushed_samples()
 {

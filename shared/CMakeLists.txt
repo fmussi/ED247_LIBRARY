@@ -22,4 +22,5 @@
 # DEALINGS IN THE SOFTWARE.                                                   #
 ###############################################################################
 
-add_subdirectory(sync_entity)
+add_subdirectory(libsynchronizer)
+add_subdirectory(libtime_tools)

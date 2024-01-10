@@ -21,10 +21,10 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER         #
 # DEALINGS IN THE SOFTWARE.                                                   #
 ###############################################################################
-#cmake_minimum_required(VERSION 3.22)
-cmake_minimum_required(VERSION 3.19)
-project(ED247_LIBRARY VERSION 2.0.2) # Define target version ${CMAKE_PROJECT_VERSION})
-include(cmake/version.cmake)         # Compute ${VERSION} according to git
+cmake_minimum_required(VERSION 3.22)
+include(version.cmake)
+project(ED247_LIBRARY VERSION ${CMAKE_PROJECT_VERSION}) # Define target version ${CMAKE_PROJECT_VERSION})
+include(cmake/version.cmake)                            # Compute ${VERSION} according to git
 include(cmake/flags.cmake)
 
 # Options multi-platform delivery.
